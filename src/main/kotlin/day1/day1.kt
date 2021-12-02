@@ -14,11 +14,7 @@ fun foldCountIncreases(list: List<Int>): Int {
 fun solveA(input: List<Int>): Int = foldCountIncreases(input)
 
 fun solveB(input: List<Int>): Int {
-    val windowSize = 3
-    val windows = input.drop(windowSize - 1)
-        .mapIndexed { index, i ->
-            (index downTo index - (windowSize - 1)).map { input[it + windowSize - 1] }.sum()
-        }
+    val windows = input.windowed(size = 3) { it.sum() }
 
     return foldCountIncreases(windows)
 }
