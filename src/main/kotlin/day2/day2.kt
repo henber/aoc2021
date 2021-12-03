@@ -1,7 +1,6 @@
 package day2
 
 import readInput
-import java.awt.ContainerOrderFocusTraversalPolicy
 
 val input = readInput("day2.txt").map { it.split(" ") }
 
