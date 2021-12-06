@@ -1,4 +1,6 @@
 import java.io.File
+import java.time.Duration
+import java.time.LocalDateTime
 
 fun readInput(fileName: String): List<String>
         = File("src/main/resources/$fileName").readLines()
@@ -93,3 +95,17 @@ fun <T> List<List<T>>.flipRows(): List<List<T>> {
 }
 
 fun List<Char>.asString(): String = String(this.toCharArray())
+
+fun <T> measureTime(loggingFunction: ((Duration) -> Unit)? = null, function: () -> T): T {
+
+    val startTime = LocalDateTime.now()
+    val result: T = function.invoke()
+    val duration = Duration.between(startTime, LocalDateTime.now())
+    if(loggingFunction == null) {
+        println("Time taken: $duration")
+    } else {
+        loggingFunction.invoke(duration)
+    }
+
+    return result
+}
