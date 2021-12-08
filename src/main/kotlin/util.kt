@@ -22,6 +22,9 @@ tailrec fun <T> listPartition(list: List<T>, result: MutableList<List<T>> = muta
     return listPartition(list.drop(partition.size + 1), result, predicate)
 }
 
+fun <T> List<T>.listPartition(predicate: (T) -> Boolean): List<List<T>> =
+    listPartition(list = this, predicate = predicate)
+
 fun <E> List<List<E>>.transpose(): List<List<E>> {
     if (isEmpty()) return this
 
