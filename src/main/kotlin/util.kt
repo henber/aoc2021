@@ -1,6 +1,8 @@
 import java.io.File
+import java.lang.Integer.max
 import java.time.Duration
 import java.time.LocalDateTime
+import kotlin.math.min
 
 fun readInput(fileName: String): List<String>
         = File("src/main/resources/$fileName").readLines()
@@ -35,6 +37,16 @@ fun <E> List<List<E>>.transpose(): List<List<E>> {
 
     return (0 until width).map { col ->
         (0 until size).map { row -> this[row][col] }
+    }
+}
+
+fun <T, R> List<List<T>>.applyMask(size: Int, maskFunc: (T, List<T>) -> R): List<List<R>> {
+    return this.mapIndexed { yIndex, xList ->
+        xList.mapIndexed { xIndex, x ->
+            val xNeighbourIndices = (max(xIndex - size, 0)..min(xIndex + size, xList.size - 1)).filter { it != xIndex }
+            val yNeighbourIndices = (max(yIndex - size, 0)..min(yIndex + size, this.size - 1)).filter { it != yIndex }
+            maskFunc.invoke(x, xNeighbourIndices.map { this[yIndex][it] } + yNeighbourIndices.map { this[it][xIndex] })
+        }
     }
 }
 
@@ -111,4 +123,11 @@ fun <T> measureTime(loggingFunction: ((Duration) -> Unit)? = null, function: () 
     }
 
     return result
+}
+
+fun <T> printMatrix(matrix: List<List<T>>) {
+    matrix.forEach {
+        println(it.joinToString(separator = " ") { it.toString() })
+    }
+    println()
 }
