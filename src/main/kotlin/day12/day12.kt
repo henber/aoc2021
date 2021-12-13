@@ -9,85 +9,38 @@ val input = readInput("day12.txt").map { it.split("-") }
 fun findPath(
     node: String,
     path: List<String>,
-    blocked: Set<String>
-): List<List<String>> {
-    if (node == "end") {
-        return listOf(path)
-    }
+    blocked: Set<String>,
+    allowDoubleVisit: Boolean
+): Sequence<List<String>> =
+    sequence {
+        if (node == "end") {
+            return@sequence yield(path)
+        }
 
-    val blockList = blocked.toMutableSet()
-    if (node == node.lowercase()) {
-        blockList.add(node)
-    }
+        val doubleVisited = !allowDoubleVisit ||
+            path.filter { blocked.contains(it) }.groupBy { it }.any { it.value.size > 1 }
 
-    return input[node]!!
-        .filterNot { blocked.contains(it) }
-        .map {
-            findPath(it, path + it, blockList)
-        }.flatten()
-}
+        val blockList = blocked.toMutableSet()
+        if (node == node.lowercase()) {
+            blockList.add(node)
+        }
+
+        input[node]!!
+            .filterNot { it == "start" }
+            .filterNot { blocked.contains(it) && doubleVisited }
+            .forEach {
+                yieldAll(findPath(it, path + it, blockList, allowDoubleVisit))
+            }
+    }
 
 fun solveA(): Int {
-    val paths = findPath("start", listOf("start"), emptySet())
+    val paths = findPath("start", listOf("start"), emptySet(), false).toList()
 
     return paths.size
 }
 
-data class Journey(
-    val path: MutableList<String>,
-    var blocked: MutableSet<String>,
-    var finished: Boolean,
-    var doubleVisited: Boolean
-) {
-    fun updateDoubleVisited() {
-        doubleVisited = path.filter { blocked.contains(it) }.groupBy { it }.any { it.value.size > 1 }
-    }
-
-    fun takeStep(): List<Journey> {
-        if (finished) return listOf(this)
-
-        val currentPos = path.last()
-        updateDoubleVisited()
-
-        val newPositions = input[currentPos]!!.filterNot { it == "start" }
-            .filterNot { blocked.contains(it) && doubleVisited }
-
-        if (newPositions.isEmpty()) {
-            finished = true
-            return listOf(this)
-        }
-
-        return newPositions.map {
-            val newJourney = this.copy(
-                path = this.path.toMutableList(),
-                blocked = this.blocked.toMutableSet()
-            )
-            newJourney.path.add(it)
-            if (it == it.lowercase()) {
-                newJourney.blocked.add(it)
-            }
-            if (it == "end") {
-                newJourney.finished = true
-            }
-            newJourney
-        }
-    }
-}
-
-fun findPath2(
-    journey: Journey
-): List<Journey> {
-    var journeys = journey.takeStep()
-
-    while (journeys.any { !it.finished }) {
-        journeys = journeys.map { it.takeStep() }.flatten()
-    }
-
-    return journeys.filter { it.path.last() == "end" }
-}
-
 fun solveB(): Int {
-    val paths = findPath2(Journey(mutableListOf("start"), mutableSetOf(), false, false))
+    val paths = findPath("start", listOf("start"), emptySet(), true).toList()
 
     return paths.size
 }
