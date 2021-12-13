@@ -14,7 +14,7 @@ fun flipHorizontal(dots: List<Pos>, column: Int): List<Pos> {
         if (it.x > column) {
             Pos(column - (it.x - column), it.y)
         } else it
-    }.distinct()
+    }
 }
 
 fun flipVertical(dots: List<Pos>, row: Int): List<Pos> {
@@ -22,7 +22,7 @@ fun flipVertical(dots: List<Pos>, row: Int): List<Pos> {
         if (it.y > row) {
             Pos(it.x, row - (it.y - row))
         } else it
-    }.distinct()
+    }
 }
 
 fun fold(axis: String, rowColumn: Int, dots: List<Pos>): List<Pos> {
@@ -30,7 +30,7 @@ fun fold(axis: String, rowColumn: Int, dots: List<Pos>): List<Pos> {
         "y" -> flipVertical(dots, rowColumn)
         "x" -> flipHorizontal(dots, rowColumn)
         else -> throw Error("Invalid axis")
-    }
+    }.distinct()
 }
 
 fun solveA(): Int {
