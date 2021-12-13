@@ -24,6 +24,8 @@ tailrec fun <T> listPartition(list: List<T>, result: MutableList<List<T>> = muta
     return listPartition(list.drop(partition.size + 1), result, predicate)
 }
 
+data class Pos(val x: Int, val y: Int)
+
 fun <T> List<T>.listPartition(predicate: (T) -> Boolean): List<List<T>> =
     listPartition(list = this, predicate = predicate)
 
