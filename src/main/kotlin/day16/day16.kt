@@ -86,9 +86,6 @@ fun parsePacket(binSeq: List<Char>, startIndex: Int = 0): Pair<Packet, Int> {
             literal += literalPart.substring(1)
         } while (literalPart[0] == '1')
 
-//        if ((cursor - startIndex) % 4 != 0) {
-//            cursor += 4 - ((cursor - startIndex) % 4) // trailing zeroes
-//        }
         literalValue = literal
     } else {
         lengthTypeId = readLengthTypeId(binSeq, cursor)
