@@ -24,7 +24,13 @@ tailrec fun <T> listPartition(list: List<T>, result: MutableList<List<T>> = muta
     return listPartition(list.drop(partition.size + 1), result, predicate)
 }
 
-data class Pos(val x: Int, val y: Int)
+data class Pos(val x: Int, val y: Int): Comparable<Pos> {
+    operator fun plus(other: Pos) = Pos(this.x + other.x, this.y + other.y)
+
+    override fun compareTo(other: Pos): Int = toString().compareTo(other.toString())
+
+    override fun toString(): String = "($x $y)"
+}
 
 fun <T> List<T>.listPartition(predicate: (T) -> Boolean): List<List<T>> =
     listPartition(list = this, predicate = predicate)
@@ -129,7 +135,7 @@ fun <T> measureTime(loggingFunction: ((Duration) -> Unit)? = null, function: () 
 
 fun <T> printMatrix(matrix: List<List<T>>) {
     matrix.forEach {
-        println(it.joinToString(separator = " ") { it.toString() })
+        println(it.joinToString(separator = "") { it.toString() })
     }
     println()
 }
