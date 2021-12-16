@@ -73,6 +73,6 @@ fun solveB(): Int {
 fun main() {
     measureTime {
         println("Answer A: ${solveA()}")
-        println("Answer A: ${solveB()}")
+        println("Answer B: ${solveB()}")
     }
 }
