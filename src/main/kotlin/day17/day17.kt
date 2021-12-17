@@ -46,11 +46,11 @@ fun computeAllTrajectories(): List<TrajectoryResult> {
     val (xmin, xmax, ymin, ymax) = regex.matchEntire(input)!!.destructured
     val area = Area(xmin.toInt(), xmax.toInt(), ymin.toInt(), ymax.toInt())
 
-    return (200 downTo area.yMin).map { y ->
+    return (200 downTo area.yMin).flatMap { y ->
         (-area.xMax..area.xMax).map { x ->
             testTrajectory(x, y, area)
         }
-    }.flatten().filter { it.hit }.filter { it.yMax != null }
+    }.filter { it.hit }.filter { it.yMax != null }
 }
 
 val trajectories = computeAllTrajectories()
